@@ -1,2 +1,2 @@
 # ntnu
-My work at NTNU studying Computer Science 
+My programming work at NTNU studying Computer Science 
