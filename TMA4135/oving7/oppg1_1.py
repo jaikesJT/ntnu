@@ -12,6 +12,8 @@ newparams = {'figure.figsize': (6.0, 6.0), 'axes.grid': True,
 'font.size': 14}
 plt.rcParams.update(newparams)
 
+#2a
+
 class EmbeddedExplicitRungeKutta:
     def __init__(self, a, b, c, bhat, order):
         self.a = a 
@@ -48,32 +50,32 @@ class EmbeddedExplicitRungeKutta:
                 t_j = t + c[j]*dt
                 dY_j = np.zeros_like(y, dtype=np.double)
                 for l in range(j):
-                    dY_j += a[j, l]*ks[l]
+                    dY_j += a[j][l]*ks[l]
                 
                 ks[j] = f(t_j, y + dt*dY_j)
 
             #Compute next time-step
             dy = np.zeros_like(y, dtype=np.double)
             for j in range(s):
-                dy += dt*b[j]*ks[j]
+                dy += b[j]*ks[j]
             
             if bhat is None:
-                ys.append(y + dy)
+                ys.append(y + dt*dy)
                 ts.append(t + dt)
 
             else:
                 #Computing dyhat
                 dyhat = np.zeros_like(y, dtype=np.double)
                 for j in range(s):
-                    dyhat += dt*bhat[j]*ks[j]
+                    dyhat += bhat[j]*ks[j]
 
                 #Computing Error estimate 
                 err = np.zeros_like(y, dtype=np.double)
                 for j in range(s):
-                    err += dt*(bhat[j]-b[j]*ks[j])
+                    err += np.linalg.norm(dt*(bhat[j]-b[j])*ks[j])
 
                 if err <= tol:
-                    ys.append(y + dyhat)
+                    ys.append(y + dt*dyhat)
                     ts.append(t + dt)
                 else:
                     print(f"Step is rejected at t = {t} with err = {err}")
@@ -87,12 +89,66 @@ class EmbeddedExplicitRungeKutta:
         return (np.array(ts), np.array(ys))
 
 
+#2b
+
+#constant values
+N_max = 100
+tol = 1e-3
+t_0, T = 0, 1
+y_0 = 1
+lam = 1
+
+#RHS and exact solutions to both examples 
+f_1 = lambda t,y: lam*y
+y_ex_1 = lambda t: y_0*np.exp(lam*(t-t_0))
+
+f_2 = lambda t,y: -2*t*y
+y_ex_2 = lambda t : np.exp(-1*t**2)
+
+
+#euler-heun
+a_eh = np.array([[0, 0], 
+                [1, 0]])
+b_eh = np.array([0.5, 0.5])
+c_eh = np.array([0, 1])
+bhat_eh = np.array([1, 0])
+order_eh = 2
 
 eulerHeun = EmbeddedExplicitRungeKutta(a_eh, b_eh, c_eh, bhat_eh, order_eh)
-eulerHeun()
+
+ts_eh_1, ys_eh_1 = eulerHeun(y_0, t_0, T, f_1, N_max, tol)
+ys_ex_1 = y_ex_1(ts_eh_1)
+
+
+plt.plot(ts_eh_1, ys_eh_1)
+plt.plot(ts_eh_1, ys_ex_1)
+
+plt.show()
+
+
+#fehlberg
+a_f = np.array([[0, 0, 0], 
+                [0.5, 0, 0], 
+                [1/256, 255/256, 0]])
+b_f = np.array([1/512, 255/256, 1/512])
+c_f = np.array([0, 0.5, 1])
+bhat_f = np.array([1/256, 255/256, 0])
+order_f = 2
 
 fehlberg = EmbeddedExplicitRungeKutta(a_f, b_f, c_f, bhat_f, order_f)
-fehlberg()
+ts_f_1, ys_f_1 = fehlberg(y_0, t_0, T, f_1, N_max, tol)
+ys_ex_1 = y_ex_1(ts_f_1)
+
+plt.plot(ts_f_1, ys_f_1)
+plt.plot(ts_f_1, ys_ex_1)
+
+plt.show()
+
+
+eulerHeun(y_0, t_0, T, f_2, N_max, tol)
+fehlberg(y_0, t_0, T, f_2, N_max, tol)
+
+
 
 
 
