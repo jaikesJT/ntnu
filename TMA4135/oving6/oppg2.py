@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+import math
 
 #2a
 
@@ -70,11 +71,47 @@ for N_max in [4, 8, 16]:
     plt.show()
     
 #2b
+print("1.")
 
 taus = []
 for m in [0, 1, 2, 3, 4, 5]:
     taus.append(2**(-1*m))
 
+N_max_list = []
+
+for i in range(len(taus)):
+    N_max_list.append((t_N-t_0)/taus[i])
+    print(f"With dt = {taus[i]} we get N_max = {(t_N-t_0)/taus[i]}")
+print()
+
+print("2.")
+
+ys_ex = y_ex_test(ts)
+
+e_mid = []
+e_ssprk3 = []
+
+for N_max in N_max_list:
+    ts, ys = explicit_mid_point_rule(y_0, t_0, t_N, g, N_max)
+    print(f"With midpoint method and N_max = {N_max} we get the error |y(10)-y_N_max,m| = {abs(ys_ex[-1]-ys[-1])}")
+    e_mid.append(abs(ys_ex[-1]-ys[-1]))
+   
+print()
+for N_max in N_max_list:
+    ts, ys = ssprk3(y_0, t_0, t_N, g, N_max)
+    print(f"With ssprk3 method and N_max = {N_max} we get the error |y(10) - y_N_max,m| = {abs(ys_ex[-1]-ys[-1])}")
+    e_ssprk3.append(abs(ys_ex[-1]-ys[-1]))
+print()
+
+
+print("3.")
+for i in range(len(N_max_list)-1):
+    print(f"With midpoint and m = {i} we get p = {math.log(e_mid[i]/e_mid[i+1])/math.log(taus[i]/taus[i+1])}")
+print()
+for i in range(len(N_max_list)-1):
+    print(f"With ssprk3 and m = {i} we get p = {math.log(e_ssprk3[i]/e_ssprk3[i+1])/math.log(taus[i]/taus[i+1])}")
+
+print()
 #2c
 
 t_0, t_N = 0, 0.5
@@ -86,24 +123,20 @@ def f(t, y):
 
 #The exact solution to compare with 
 def y_ex(t):
-    return y_0*np.exp(-1*t**2)
+    return np.exp(-1*t**2)
 
-print("Approxiamtions of y(0.5):")
+print("Approximations of y(0.5):")
 print()
 
 #First point:
 
-N_max = 3
-
-ts, ys_mid = explicit_mid_point_rule(y_0, t_0, t_N, f, N_max)
-print("Approximate of y(0.5) with N_max = 3 and midpoint method is: " + str(ys_mid[-1]))
+ts, ys_mid = explicit_mid_point_rule(y_0, t_0, t_N, f, 3)
+print("Approximate of y(0.5) with N_max = 3 with midpoint method is: " + str(ys_mid[-1]))
 
 #Second point 
 
-N_max = 2
-
-ts, ys_ssprk3 = ssprk3(y_0, t_0, t_N, f, N_max)
-print("Approximate of y(0.5) with N_max = 2 and ssprk3 method is: " + str(ys_ssprk3[-1]))
+ts, ys_ssprk3 = ssprk3(y_0, t_0, t_N, f, 2)
+print("Approximate of y(0.5) with N_max = 2 with ssprk3 method is: " + str(ys_ssprk3[-1]))
 
 print()
 #Errors
@@ -113,6 +146,6 @@ print()
 print(f"|y(0.5) - y_mid(0.5)| = {abs(y_ex(ts[-1]) - ys_mid[-1])}")
 print(f"|y(0.5) - y_ssprk3(0.5)| = {abs(y_ex(ts[-1]) - ys_ssprk3[-1])}")
 print()
-print("As expected, ssprk3 is more accurate even with N_max less than N_max of midpoint method")
+print("As expected, ssprk3 is more accurate even with N_max less than N_max used during use of midpoint method")
 
 
