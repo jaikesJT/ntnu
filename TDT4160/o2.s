@@ -44,13 +44,13 @@ Start:
 	ORR R2, R2, R1
 	STR R2, [R0]
 
-	// Interupt-Enable. Enabler pinnen med interupt.
 	LDR R0, =GPIO_BASE + GPIO_IEN
 	LDR R1, =1 << BUTTON_PIN
 	LDR R2, [R0]
 	ORR R2, R2, R1
 	STR R2, [R0]
 
+//infinite loop som kjorer i bakgrunnen
 loop:
 	WFI
 	B loop
