@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram height="880" made_with_version="1.6" name="Default" width="1420">
+<entity id="0" is_weak="false" name="Person" x="314" y="281">
+<attributes>
+<attribute is_hidden="false" is_key="true" name="Personnr" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Navn" type="String"/>
+<attribute is_hidden="false" is_key="false" name="Telefon" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Type" type="String"/>
+</attributes>
+</entity>
+<entity id="1" is_weak="false" name="Bygg" x="552" y="289">
+<attributes>
+<attribute is_hidden="false" is_key="true" name="Gårdsnummer" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Gateadresse" type="String"/>
+<attribute is_hidden="false" is_key="false" name="Byggeår" type="Integer"/>
+</attributes>
+</entity>
+<entity id="2" is_weak="false" name="Leilighet" x="821" y="300">
+<attributes>
+<attribute is_hidden="false" is_key="true" name="ID" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Leilighetsnr" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Kvadratmeterstr" type="Integer"/>
+</attributes>
+</entity>
+<entity id="3" is_weak="false" name="Bod" x="485" y="430">
+<attributes>
+<attribute is_hidden="false" is_key="true" name="Nummer" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Størrelse" type="Integer"/>
+<attribute is_hidden="false" is_key="false" name="Mulighet for strømuttak" type="Boolean"/>
+</attributes>
+</entity>
+<comment id="4" x="394" y="288">
+<text>
+<line>(0, n) </line>
+</text>
+</comment>
+</diagram>
